@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/158d5f1b-b99e-4cd9-9ea7-69a51a6434be/resourceGroups/RG-CitasMedicas/providers/Microsoft.Web/sites/api-citasmedicas",
+    "appService.deploySubpath": "."
+}

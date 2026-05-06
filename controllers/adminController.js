@@ -137,9 +137,12 @@ const getPacientes = async (req, res) => {
 const getAllUsers = async (req, res) => {
     try {
         const result = await pool.query(
-            `SELECT id, email, role, nombre, apellido, cedula, telefono, estado, created_at 
-             FROM usuarios 
-             ORDER BY created_at DESC`
+            `SELECT u.id, u.email, u.role, u.nombre, u.apellido, u.cedula, u.telefono, u.estado, u.created_at,
+                    e.nombre as especialidad, m.consultorio, m.horario_atencion
+             FROM usuarios u
+             LEFT JOIN medicos m ON u.id = m.usuario_id
+             LEFT JOIN especialidades e ON m.especialidad_id = e.id
+             ORDER BY u.created_at DESC`
         );
         res.json({ usuarios: result.rows });
     } catch (error) {
@@ -178,24 +181,73 @@ const updateUserStatus = async (req, res) => {
 };
 
 // Actualizar usuario completo (email, rol, nombre, apellido, cedula, telefono)
+// Actualizar usuario completo (incluyendo datos de médico)
 const updateUser = async (req, res) => {
     const userId = req.params.id;
-    const { email, role, nombre, apellido, cedula, telefono } = req.body;
+    const { 
+        email, role, nombre, apellido, cedula, telefono, 
+        especialidad, consultorio, horario_atencion, estado 
+    } = req.body;
     
     try {
+        // 1. Actualizar tabla usuarios
         const result = await pool.query(
             `UPDATE usuarios 
-             SET email = $1, role = $2, nombre = $3, apellido = $4, cedula = $5, telefono = $6
-             WHERE id = $7 
-             RETURNING id, email, role, nombre, apellido, cedula, telefono, estado`,
-            [email, role, nombre, apellido, cedula, telefono, userId]
+             SET email = $1, role = $2, nombre = $3, apellido = $4, 
+                 cedula = $5, telefono = $6, estado = $7
+             WHERE id = $8 
+             RETURNING id, email, role, nombre, apellido, estado`,
+            [email, role, nombre, apellido, cedula, telefono, estado || 'activo', userId]
         );
         
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
         
-        res.json({ message: 'Usuario actualizado', user: result.rows[0] });
+        // 2. Si es médico, actualizar tabla medicos
+        if (role === 'medico' && especialidad) {
+            // Obtener o crear especialidad_id
+            let especialidadId = null;
+            const espResult = await pool.query(
+                'SELECT id FROM especialidades WHERE nombre = $1',
+                [especialidad]
+            );
+            
+            if (espResult.rows.length > 0) {
+                especialidadId = espResult.rows[0].id;
+            } else {
+                const newEsp = await pool.query(
+                    'INSERT INTO especialidades (nombre) VALUES ($1) RETURNING id',
+                    [especialidad]
+                );
+                especialidadId = newEsp.rows[0].id;
+            }
+            
+            // Verificar si ya existe registro en medicos
+            const medicoExistente = await pool.query(
+                'SELECT id FROM medicos WHERE usuario_id = $1',
+                [userId]
+            );
+            
+            if (medicoExistente.rows.length > 0) {
+                // Actualizar registro existente
+                await pool.query(
+                    `UPDATE medicos 
+                     SET especialidad_id = $1, consultorio = $2, horario_atencion = $3
+                     WHERE usuario_id = $4`,
+                    [especialidadId, consultorio || '', horario_atencion || '', userId]
+                );
+            } else {
+                // Crear nuevo registro
+                await pool.query(
+                    `INSERT INTO medicos (usuario_id, especialidad_id, consultorio, horario_atencion) 
+                     VALUES ($1, $2, $3, $4)`,
+                    [userId, especialidadId, consultorio || '', horario_atencion || '']
+                );
+            }
+        }
+        
+        res.json({ message: 'Usuario actualizado correctamente', user: result.rows[0] });
     } catch (error) {
         if (error.code === '23505') {
             res.status(400).json({ error: 'El email o cédula ya está en uso' });

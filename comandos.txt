@@ -5,3 +5,20 @@ psql "host=citasmedicas-db.postgres.database.azure.com port=5432 dbname=postgres
 
 # Si tienes psql instalado localmente:
 psql "host=citasmedicas-db.postgres.database.azure.com port=5432 dbname=postgres user=admincitas password=juanchoP18# sslmode=require"
+
+
+Rutas para git
+cd "C:\Users\JHONDY\OneDrive - Universidad de San Buenaventura - Bogota\Documents\Decimo_Tercer_Semestre\Ingeniería web\Corte_3\Universidad"
+
+github:
+git remote add origin https://github.com/juanchoop23/citas-medicas.git
+
+git push origin main
+
+
+
+admin@clinica.com
+admin123
+
+	paciente@test.com
+    123456

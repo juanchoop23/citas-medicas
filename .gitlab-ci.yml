@@ -1,0 +1,34 @@
+image: node:18
+
+stages:
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: "18"
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  script:
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  script:
+    - apt-get update -qq && apt-get install -y -qq curl
+    - curl --ftp-create-dirs -T ./ -u $AZURE_FTP_USER:$AZURE_FTP_PASSWORD ftp://$AZURE_FTP_SERVER/site/wwwroot/
+  only:
+    - main
+  environment:
+    name: production
+    url: https://api-citasmedicas.azurewebsites.net
