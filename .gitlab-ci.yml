@@ -1,34 +1,20 @@
 image: node:18
 
 stages:
-  - build
   - deploy
 
 variables:
-  NODE_VERSION: "18"
-
-cache:
-  paths:
-    - node_modules/
-
-build:
-  stage: build
-  script:
-    - npm install
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
-  only:
-    - main
+  AZURE_FTP_SERVER: "ftps://waws-prod-yt1-063.ftp.azurewebsites.windows.net/site/wwwroot"
+  AZURE_FTP_USER: "REDACTED"
+  AZURE_FTP_PASSWORD: "REDACTED"  # Se pondrá como variable secreta
 
 deploy:
   stage: deploy
   script:
-    - apt-get update -qq && apt-get install -y -qq curl
-    - curl --ftp-create-dirs -T ./ -u $AZURE_FTP_USER:$AZURE_FTP_PASSWORD ftp://$AZURE_FTP_SERVER/site/wwwroot/
+    - apt-get update -qq && apt-get install -y -qq lftp
+    - lftp -c "open -u '$AZURE_FTP_USER','$AZURE_FTP_PASSWORD' '$AZURE_FTP_SERVER'; set ftp:ssl-allow yes; mirror -R ./ ./site/wwwroot"
   only:
     - main
   environment:
     name: production
-    url: https://api-citasmedicas.azurewebsites.net
+    url: https://api-citasmedicas-fwfrhzegbdd2c2bk.canadacentral-01.azurewebsites.net
