@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil - Médico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: white;
+      padding: 1.5rem;
+    }
+    h2 {
+      color: #1f4870;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .profile-container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .avatar {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .avatar-icon {
+      width: 100px;
+      height: 100px;
+      background: #1f4870;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .input-group.full-width { grid-column: span 2; }
+    label { font-weight: 600; color: #1f4870; font-size: 0.85rem; }
+    .input-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-icon i {
+      position: absolute;
+      left: 1rem;
+      color: #8aaec0;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.8rem;
+      border: 1px solid #cbdde9;
+      border-radius: 1.2rem;
+      font-size: 0.9rem;
+      background: white;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #1f4870;
+      box-shadow: 0 0 0 3px rgba(31,72,112,0.15);
+    }
+    .separator {
+      margin: 1rem 0;
+      border-top: 1px solid #eef2f8;
+    }
+    .checkbox-group {
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .btn-actualizar {
+      background: #27ae60;
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 0.9rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .btn-actualizar:hover { background: #229954; transform: translateY(-2px); }
+    .btn-cancelar {
+      background: #95a5a6;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.7rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+    .btn-cancelar:hover { background: #7f8c8d; }
+    .mensaje {
+      margin-top: 1rem;
+      padding: 0.8rem;
+      border-radius: 1rem;
+      text-align: center;
+      display: none;
+    }
+    .mensaje.exito { background: #dcfce7; color: #15803d; display: block; }
+    .mensaje.error { background: #fee2e2; color: #b91c1c; display: block; }
+    @media (max-width: 650px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .input-group.full-width { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="profile-container">
+  <h2><i class="fas fa-user-md"></i> Mi Perfil Médico</h2>
+  <div class="avatar"><div class="avatar-icon"><i class="fas fa-user-md"></i></div></div>
+
+  <form id="perfilForm">
+    <div class="form-grid">
+      <div class="input-group"><label><i class="fas fa-user"></i> Nombre</label><div class="input-icon"><i class="fas fa-user"></i><input type="text" id="nombre" required></div></div>
+      <div class="input-group"><label><i class="fas fa-user"></i> Apellido</label><div class="input-icon"><i class="fas fa-user"></i><input type="text" id="apellido" required></div></div>
+      <div class="input-group full-width"><label><i class="fas fa-envelope"></i> Correo</label><div class="input-icon"><i class="fas fa-envelope"></i><input type="email" id="email" readonly style="background:#f5f5f5; cursor:not-allowed;"></div></div>
+      <div class="input-group"><label><i class="fas fa-id-card"></i> Cédula</label><div class="input-icon"><i class="fas fa-id-card"></i><input type="text" id="cedula" required></div></div>
+      <div class="input-group"><label><i class="fas fa-phone-alt"></i> Teléfono</label><div class="input-icon"><i class="fas fa-phone-alt"></i><input type="tel" id="telefono" required></div></div>
+      <div class="input-group"><label><i class="fas fa-stethoscope"></i> Especialidad</label><div class="input-icon"><i class="fas fa-stethoscope"></i><select id="especialidad"><option>Medicina General</option><option>Cardiología</option><option>Dermatología</option><option>Pediatría</option><option>Ginecología</option><option>Odontología</option></select></div></div>
+      <div class="input-group"><label><i class="fas fa-door-open"></i> Consultorio</label><div class="input-icon"><i class="fas fa-door-open"></i><input type="text" id="consultorio" placeholder="Ej: Consultorio 101"></div></div>
+      <div class="input-group full-width"><label><i class="fas fa-clock"></i> Horario</label><div class="input-icon"><i class="fas fa-clock"></i><input type="text" id="horario" placeholder="Lun-Vie 8:00-17:00"></div></div>
+    </div>
+
+    <div class="separator"></div>
+    <div class="checkbox-group"><input type="checkbox" id="resetPassword"><label for="resetPassword">Cambiar contraseña</label></div>
+    <div id="passwordFields" style="display:none;">
+      <div class="form-grid">
+        <div class="input-group"><label><i class="fas fa-lock"></i> Nueva contraseña</label><div class="input-icon"><i class="fas fa-key"></i><input type="password" id="password" placeholder="Mínimo 6 caracteres"></div></div>
+        <div class="input-group"><label><i class="fas fa-check-circle"></i> Confirmar</label><div class="input-icon"><i class="fas fa-check-circle"></i><input type="password" id="confirmPassword"></div></div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-actualizar"><i class="fas fa-save"></i> Actualizar Perfil</button>
+    <button type="button" class="btn-cancelar" onclick="window.parent.location.href='dashboardMedico.html'"><i class="fas fa-arrow-left"></i> Volver</button>
+    <div id="mensaje" class="mensaje"></div>
+  </form>
+</div>
+
+<script>
+  const API_URL = 'http://localhost:8080';
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  if (!token || user.role !== 'medico') {
+    alert('Acceso denegado');
+    window.parent.location.href = '../../index.html';
+  }
+
+  document.getElementById('resetPassword').addEventListener('change', (e) => {
+    document.getElementById('passwordFields').style.display = e.target.checked ? 'block' : 'none';
+  });
+
+  async function cargarPerfil() {
+    try {
+      const response = await fetch(`${API_URL}/api/medico/mi-perfil`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const medico = data.medico;
+        document.getElementById('nombre').value = medico.nombre || '';
+        document.getElementById('apellido').value = medico.apellido || '';
+        document.getElementById('email').value = medico.email || '';
+        document.getElementById('cedula').value = medico.cedula || '';
+        document.getElementById('telefono').value = medico.telefono || '';
+        document.getElementById('especialidad').value = medico.especialidad || 'Medicina General';
+        document.getElementById('consultorio').value = medico.consultorio || '';
+        document.getElementById('horario').value = medico.horario_atencion || '';
+      } else {
+        mostrarMensaje('Error al cargar perfil', 'error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      mostrarMensaje('Error de conexión', 'error');
+    }
+  }
+
+  function mostrarMensaje(texto, tipo) {
+    const msgDiv = document.getElementById('mensaje');
+    msgDiv.textContent = texto;
+    msgDiv.className = `mensaje ${tipo}`;
+    setTimeout(() => {
+      if (tipo === 'exito') {
+        window.parent.location.href = 'dashboardMedico.html';
+      }
+    }, 2000);
+  }
+
+  document.getElementById('perfilForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const resetPassword = document.getElementById('resetPassword').checked;
+    const nuevaPassword = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (resetPassword && nuevaPassword !== confirmPassword) {
+      mostrarMensaje('Las contraseñas no coinciden', 'error');
+      return;
+    }
+    if (resetPassword && nuevaPassword.length < 6) {
+      mostrarMensaje('La contraseña debe tener al menos 6 caracteres', 'error');
+      return;
+    }
+
+    const btn = document.querySelector('.btn-actualizar');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+
+    try {
+      // Actualizar datos del perfil
+      // Dentro del submit del formulario
+        // 1. Actualizar datos básicos del usuario
+        const updateResponse = await fetch(`${API_URL}/api/medico/mi-perfil`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({
+                nombre: document.getElementById('nombre').value,
+                apellido: document.getElementById('apellido').value,
+                cedula: document.getElementById('cedula').value,
+                telefono: document.getElementById('telefono').value
+            })
+        });
+
+        // 2. Actualizar datos médicos
+        const updateMedicoResponse = await fetch(`${API_URL}/api/medico/mi-perfil-medico`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({
+                especialidad: document.getElementById('especialidad').value,
+                consultorio: document.getElementById('consultorio').value,
+                horario_atencion: document.getElementById('horario').value
+            })
+        });
+
+      mostrarMensaje('✅ Perfil actualizado exitosamente', 'exito');
+    } catch (error) {
+      mostrarMensaje('❌ Error: ' + error.message, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-save"></i> Actualizar Perfil';
+    }
+  });
+
+  cargarPerfil();
+</script>
+</body>
+</html>

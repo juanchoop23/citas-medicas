@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Dashboard</title>
+  <!-- Google Fonts & Font Awesome (mismo estilo login/registro) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #e9f0fc 0%, #dbe6f2 100%);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;  /* Añadir esto para evitar scroll doble */
+    }
+
+    /* ========== ENCABEZADO (estilo login/registro) ========== */
+    header {
+      background: #1f4870;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo img {
+      border-radius: 12px;
+      background: white;
+      padding: 5px;
+      width: 55px;
+      object-fit: contain;
+    }
+
+    .logo h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      background: #2e5a88;
+      padding: 0.5rem 1.2rem;
+      border-radius: 60px;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #ffbf69;
+      object-fit: cover;
+    }
+
+    .user-name {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid #ffbf69;
+      color: #ffbf69;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-logout:hover {
+      background: #ffbf69;
+      color: #1f4870;
+    }
+
+    /* ========== BOTÓN HAMBURGUESA (móvil) ========== */
+    .menu-toggle {
+      display: none;
+    }
+
+    .menu-btn {
+      display: none;
+      cursor: pointer;
+      background: #1f4870;
+      padding: 0.7rem 1rem;
+      border-radius: 50px;
+      font-size: 1.4rem;
+      user-select: none;
+      transition: 0.2s;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 30;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      color: white;
+      border: none;
+    }
+
+    .menu-btn:hover {
+      background: #0f3554;
+      transform: scale(1.02);
+    }
+
+    /* ========== LAYOUT PRINCIPAL ========== */
+   .dashboard-container {
+      display: flex;
+      flex: 1;
+      position: relative;
+      background: #f4f7fc;
+      min-height: 0;  /* Añadir esto - importante para flex */
+      overflow: hidden;  /* Añadir esto */
+    }
+
+    /* MENU LATERAL (estilo acorde al login/registro: card, sombras suaves) */
+    .dashboard-nav {
+      width: 220px;
+      background: white;
+      backdrop-filter: blur(2px);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+      border-radius: 1rem 2rem 2rem 1rem;
+      margin: 1rem 0 1rem 0;
+      transform: translateX(-100%);
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: auto;
+      min-height: 500px;
+      z-index: 20;
+      overflow-y: auto;
+      border-right: 1px solid #eef2f8;
+    }
+
+    /* Cuando el checkbox está marcado, el menú se muestra */
+    #menu-toggle:checked ~ .dashboard-container .dashboard-nav {
+      transform: translateX(0);
+    }
+
+    .dashboard-nav ul {
+      list-style: none;
+      padding: 1.8rem 1rem;
+    }
+
+    .dashboard-nav li {
+      margin-bottom: 0.5rem;
+    }
+
+    .dashboard-nav .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.9rem 1.2rem;
+      color: #2c4e6e;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+      border-radius: 1.2rem;
+      background: white;
+      margin-bottom: 0.3rem;
+    }
+
+    .dashboard-nav .menu-item i {
+      width: 24px;
+      color: #5f8db0;
+      font-size: 1.1rem;
+    }
+
+    .dashboard-nav .menu-item:hover {
+      background: #eef2fa;
+      color: #1f4870;
+      transform: translateX(4px);
+    }
+
+    /* Overlay para cerrar menú móvil */
+    .menu-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 15;
+    }
+
+    #menu-toggle:checked ~ .menu-overlay {
+      display: block;
+    }
+
+    /* CONTENIDO PRINCIPAL + FRAME (estilo moderno) */
+    .dashboard-main {
+        flex: 1;
+        padding: 1rem;
+        background: transparent;
+        overflow: auto;  /* Cambiar de overflow-x a auto */
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Secciones con target (por defecto se muestra la primera) */
+    .dashboard-section {
+        display: none;
+        height: 100%;  /* Añadir esto */
+        flex: 1;
+    }
+
+    .dashboard-section:target {
+        display: flex;  /* Cambiar de block a flex */
+        flex-direction: column;
+    }
+
+    .dashboard-section:first-of-type {
+        display: flex;  /* Cambiar de block a flex */
+        flex-direction: column;
+    }
+
+    .dashboard-section:target ~ .dashboard-section:first-of-type {
+      display: none;
+    }
+
+    /* Tarjeta del iframe */
+    .content-card {
+    background: rgba(255, 255, 255, 0.96);
+    border-radius: 1.8rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    padding: 0.2rem;
+    border: 1px solid #eef2f8;
+    overflow: hidden;
+    transition: all 0.2s;
+    flex: 1;  /* Añadir esto */
+    display: flex;
+    flex-direction: column;
+    }
+
+    .content-frame {
+    width: 100%;
+    height: 100%;  /* Cambiar de min-height a height */
+    border: none;
+    border-radius: 1.5rem;
+    background: white;
+    display: block;
+    flex: 1;
+    }
+    /* FOOTER estilo consistente */
+    footer {
+      background: #1f4870;
+      color: #cddfe7;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.75rem;
+      margin-top: auto;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media screen and (max-width: 768px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+      }
+      
+      .logo {
+        justify-content: center;
+        width: 100%;
+      }
+      
+      .logo h1 {
+        font-size: 1.3rem;
+      }
+      
+      .user-info {
+        justify-content: center;
+        width: auto;
+      }
+
+      .menu-btn {
+        display: inline-flex;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 25;
+        background: #1f4870;
+        font-size: 1.5rem;
+        padding: 0.7rem 1.1rem;
+        border-radius: 50px;
+      }
+
+      .dashboard-nav {
+        width: 280px;
+        transform: translateX(-100%);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: 30;
+        border-radius: 0 1.5rem 1.5rem 0;
+        margin: 0;
+        background: white;
+      }
+
+      .dashboard-main {
+        padding: 1rem;
+      }
+
+      .content-frame {
+        min-height: 450px;
+      }
+    }
+
+    /* Desktop: menú siempre visible */
+    @media screen and (min-width: 769px) {
+      .menu-btn {
+        display: none;
+      }
+      
+      .dashboard-nav {
+        transform: translateX(0) !important;
+        position: relative;
+        height: auto;
+        margin: 1rem 0 1rem 1rem;
+      }
+      
+      .menu-overlay {
+        display: none !important;
+      }
+      
+      .dashboard-container {
+        margin: 0 0rem 0rem 0rem;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+   .dashboard-main {
+        padding: 1rem;
+    }
+
+    .content-frame {
+        height: 100%;  /* Cambiar de min-height a height */
+    }
+    }
+
+    /* Ajuste para scroll suave */
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Checkbox oculto para controlar menú móvil -->
+<input type="checkbox" id="menu-toggle" style="display: none;">
+
+<!-- Botón hamburguesa (visible solo móvil) -->
+<label for="menu-toggle" class="menu-btn" title="Abrir menú">
+  <i class="fas fa-bars"></i>
+</label>
+
+<!-- Overlay para cerrar menú -->
+<label for="menu-toggle" class="menu-overlay"></label>
+
+<!-- Encabezado (igual estilo login/registro) -->
+<header>
+  <div class="logo">
+    <!-- Logo simulado para mantener coherencia visual -->
+    <div style="background: white; border-radius: 16px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+      <i class="fas fa-stethoscope" style="font-size: 2rem; color: #1f4870;"></i>
+    </div>
+    <h1>Clínica Salud+</h1>
+  </div>
+  <div class="user-info">
+    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffbf69'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Avatar" class="user-avatar">
+    <span class="user-name"></i> Nombre (<i>Perfil</i>)</span>
+    <a href="../../index.html" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+  </div>
+</header>
+
+<div class="dashboard-container">
+  <!-- Menú lateral dinámico (ítems recibidos desde backend en el ejemplo original, aquí versión HTML puro) -->
+  <nav class="dashboard-nav">
+    <ul>
+      <!-- Cada enlace apunta a una sección iframe diferente, simulando las actividades -->
+      <li>
+        <a href="listaUsuariosAdmin.html" class="menu-item" target="marco">
+          <i class="fas fa-user-circle"></i> Listar Usuarios
+        </a>
+      </li>
+      <li>
+        <a href="listarCitasAdmin.html" class="menu-item" target="marco">
+          <i class="fas fa-tasks"></i> Listar Citas
+        </a>
+      </li>
+      <li>
+        <a href="reportes.html" class="menu-item" target="marco">
+          <i class="fas fa-chart-line"></i> Reportes
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Contenido principal con las secciones (cada una es un iframe) -->
+  <main class="dashboard-main">
+    <!-- Sección por defecto (dashboard principal) -->
+    <section class="dashboard-section" id="subir">
+      <div class="content-card">
+        <iframe 
+          name="marco" 
+          frameborder="0"
+          src="../bienvenida.html"
+          class="content-frame"
+          title="Panel principal">
+        </iframe>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <p>&copy; 2026 - Sistema de gestión Clínica | Todos los derechos reservados.</p>
+</footer>
+
+<script>
+    const API_URL = 'http://localhost:8080';
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    // Verificar autenticación y rol
+    if (!token) {
+        alert('Debes iniciar sesión primero');
+        window.location.href = '../../index.html';
+    }
+    
+    if (user.role !== 'admin') {
+        alert('Acceso denegado. No tienes permisos de administrador.');
+        window.location.href = '../../index.html';
+    }
+    
+    // Mostrar nombre del usuario
+    const userNameSpan = document.querySelector('.user-name');
+    if (userNameSpan) {
+        userNameSpan.innerHTML = `<i class="fas fa-user-shield"></i> ${user.email || 'Administrador'} (Admin)`;
+    }
+    
+    // Cerrar sesión
+    const logoutBtn = document.querySelector('.btn-logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../../index.html';
+        });
+    }
+</script>
+
+</body>
+</html>

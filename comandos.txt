@@ -1,0 +1,7 @@
+conection a la base de datos desde azure:
+psql "host=citasmedicas-db.postgres.database.azure.com port=5432 dbname=postgres user=admincitas password=juanchoP18# sslmode=require"
+
+
+
+# Si tienes psql instalado localmente:
+psql "host=citasmedicas-db.postgres.database.azure.com port=5432 dbname=postgres user=admincitas password=juanchoP18# sslmode=require"

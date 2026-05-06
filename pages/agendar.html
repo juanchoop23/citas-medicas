@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Agendar Cita | Clínica Salud+</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #e9f0fc 0%, #dbe6f2 100%);
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    }
+    .header {
+      background: #1f4870;
+      padding: 1.5rem 2rem;
+      color: white;
+    }
+    .header h1 { font-size: 1.6rem; display: flex; align-items: center; gap: 0.8rem; }
+    .body { padding: 2rem; }
+    .layout { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .form-col { flex: 1.2; min-width: 300px; }
+    .horarios-col { flex: 0.9; min-width: 300px; }
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 1px solid #eef2f8;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .card h2 { font-size: 1.3rem; color: #1f4870; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.6rem; }
+    .input-group { margin-bottom: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    label { font-weight: 600; color: #1f4870; font-size: 0.85rem; }
+    .input-icon { position: relative; display: flex; align-items: center; }
+    .input-icon i { position: absolute; left: 1rem; color: #8aaec0; }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.8rem;
+      border: 1px solid #cbdde9;
+      border-radius: 1.2rem;
+      font-size: 0.9rem;
+      background: white;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #1f4870;
+      box-shadow: 0 0 0 3px rgba(31,72,112,0.15);
+    }
+    .horarios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    .hora-item {
+      background: #f8fafd;
+      border: 1px solid #e2edf2;
+      border-radius: 2rem;
+      padding: 0.6rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #2c4e6e;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .hora-item.disponible { background: #dcfce7; border-color: #27ae60; color: #15803d; }
+    .hora-item.disponible:hover { background: #27ae60; color: white; transform: scale(1.02); }
+    .hora-item.ocupado { background: #fee2e2; border-color: #e74c3c; color: #b91c1c; cursor: not-allowed; opacity: 0.7; }
+    .hora-item.seleccionado { background: #1f4870; border-color: #1f4870; color: white; }
+    .leyenda { display: flex; gap: 1rem; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid #eef2f8; }
+    .leyenda-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; }
+    .leyenda-color { width: 16px; height: 16px; border-radius: 50%; }
+    .leyenda-color.disponible { background: #27ae60; }
+    .leyenda-color.ocupado { background: #e74c3c; }
+    .btn-agendar {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 0.9rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+    .btn-agendar:hover { background: #229954; transform: translateY(-2px); }
+    .resumen-cita { background: #eef2fa; border-radius: 1rem; padding: 1rem; margin-top: 0.5rem; }
+    .resumen-cita p { font-size: 0.85rem; margin: 0.4rem 0; display: flex; gap: 0.5rem; }
+    .footer { background: #f8fafd; padding: 1rem 2rem; text-align: center; font-size: 0.7rem; color: #8aaec0; border-top: 1px solid #eef2f8; }
+    @media (max-width: 768px) { .body { padding: 1rem; } .layout { flex-direction: column; } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><i class="fas fa-calendar-plus"></i> Agendar nueva cita</h1>
+  </div>
+  <div class="body">
+    <div class="layout">
+      <div class="form-col">
+        <div class="card">
+          <h2><i class="fas fa-notes-medical"></i> Datos de la cita</h2>
+          <form id="agendarForm">
+            <div class="input-group">
+              <label><i class="fas fa-user-md"></i> Médico / Especialidad</label>
+              <div class="input-icon">
+                <i class="fas fa-user-md"></i>
+                <select id="medico" required>
+                  <option value="">Cargando médicos...</option>
+                </select>
+              </div>
+            </div>
+            <div class="input-group">
+              <label><i class="fas fa-calendar-day"></i> Fecha</label>
+              <div class="input-icon">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="date" id="fecha" required>
+              </div>
+            </div>
+            <div class="input-group">
+              <label><i class="fas fa-comment"></i> Motivo de la consulta</label>
+              <div class="input-icon">
+                <i class="fas fa-note-sticky"></i>
+                <textarea id="motivo" rows="3" placeholder="Describa brevemente el motivo de su consulta..."></textarea>
+              </div>
+            </div>
+            <button type="button" id="btn-agendar" class="btn-agendar">
+              <i class="fas fa-save"></i> Agendar cita
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="horarios-col">
+        <div class="card">
+          <h2><i class="fas fa-clock"></i> Horarios disponibles</h2>
+          <div class="leyenda">
+            <div class="leyenda-item"><div class="leyenda-color disponible"></div><span>Disponible</span></div>
+            <div class="leyenda-item"><div class="leyenda-color ocupado"></div><span>Ocupado</span></div>
+          </div>
+          <div id="horarios-grid" class="horarios-grid">
+            <p style="grid-column:span 4; text-align:center;">Seleccione un médico y una fecha</p>
+          </div>
+        </div>
+        <div class="card">
+          <h2><i class="fas fa-receipt"></i> Resumen de cita</h2>
+          <div class="resumen-cita" id="resumen-cita">
+            <p><i class="fas fa-user-md"></i> <strong>Médico:</strong> <span id="res-medico">-</span></p>
+            <p><i class="fas fa-calendar-day"></i> <strong>Fecha:</strong> <span id="res-fecha">-</span></p>
+            <p><i class="fas fa-clock"></i> <strong>Hora:</strong> <span id="res-hora">-</span></p>
+            <hr style="margin: 0.6rem 0;">
+            <p id="res-mensaje" style="color: #27ae60;"><i class="fas fa-check-circle"></i> Complete los datos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <p><i class="fas fa-calendar-check"></i> Seleccione médico, fecha y hora disponible</p>
+  </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080';
+    const token = localStorage.getItem('token');
+    let horaSeleccionada = null;
+    let medicosList = [];
+    
+    // Verificar autenticación
+    if (!token) {
+        alert('Debes iniciar sesión para agendar una cita');
+        window.location.href = '../index.html';
+    }
+    
+    // Configurar fecha mínima (mañana)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('fecha').min = tomorrow.toISOString().split('T')[0];
+    
+    // Cargar médicos disponibles
+    async function cargarMedicos() {
+        try {
+            const response = await fetch(`${API_URL}/api/medicos/disponibles`);
+            if (response.ok) {
+                const data = await response.json();
+                medicosList = data.medicos || [];
+                const select = document.getElementById('medico');
+                select.innerHTML = '<option value="">Seleccione un médico...</option>';
+                medicosList.forEach(medico => {
+                    const nombreCompleto = `${medico.nombre || ''} ${medico.apellido || ''}`.trim();
+                    const especialidad = medico.especialidad || 'Médico';
+                    const consultorio = medico.consultorio ? ` - ${medico.consultorio}` : '';
+                    select.innerHTML += `<option value="${medico.id}">${especialidad} - ${nombreCompleto || medico.email}${consultorio}</option>`;
+                });
+                if (medicosList.length === 0) {
+                    select.innerHTML = '<option value="">No hay médicos disponibles</option>';
+                }
+            } else {
+                console.error('Error al cargar médicos');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('medico').innerHTML = '<option value="">Error al cargar médicos</option>';
+        }
+    }
+    
+    // Actualizar resumen cuando cambia el médico
+    document.getElementById('medico').addEventListener('change', () => {
+        const medicoSelect = document.getElementById('medico');
+        const selectedOption = medicoSelect.options[medicoSelect.selectedIndex];
+        document.getElementById('res-medico').innerText = selectedOption.text || '-';
+        document.getElementById('res-hora').innerText = '-';
+        horaSeleccionada = null;
+        cargarHorarios();
+    });
+    
+    document.getElementById('fecha').addEventListener('change', () => {
+        const fecha = document.getElementById('fecha').value;
+        document.getElementById('res-fecha').innerText = fecha || '-';
+        document.getElementById('res-hora').innerText = '-';
+        horaSeleccionada = null;
+        cargarHorarios();
+    });
+    
+    async function cargarHorarios() {
+        const medicoId = document.getElementById('medico').value;
+        const fecha = document.getElementById('fecha').value;
+        
+        if (!medicoId || !fecha) {
+            document.getElementById('horarios-grid').innerHTML = '<p style="grid-column:span 4; text-align:center;">Seleccione un médico y una fecha</p>';
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_URL}/api/medicos/${medicoId}/horarios?fecha=${fecha}`);
+            if (response.ok) {
+                const data = await response.json();
+                const grid = document.getElementById('horarios-grid');
+                grid.innerHTML = '';
+                
+                if (data.horarios_disponibles.length === 0) {
+                    grid.innerHTML = '<p style="grid-column:span 4; text-align:center;">No hay horarios disponibles para esta fecha</p>';
+                    return;
+                }
+                
+                data.horarios_disponibles.forEach(hora => {
+                    const btn = document.createElement('div');
+                    btn.className = 'hora-item disponible';
+                    btn.innerHTML = `<i class="fas fa-clock"></i> ${hora}`;
+                    btn.onclick = () => seleccionarHora(hora);
+                    grid.appendChild(btn);
+                });
+                
+                if (data.horarios_ocupados.length > 0) {
+                    data.horarios_ocupados.forEach(hora => {
+                        const ocupado = document.createElement('div');
+                        ocupado.className = 'hora-item ocupado';
+                        ocupado.innerHTML = `<i class="fas fa-clock"></i> ${hora}`;
+                        grid.appendChild(ocupado);
+                    });
+                }
+            } else {
+                document.getElementById('horarios-grid').innerHTML = '<p>Error al cargar horarios</p>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('horarios-grid').innerHTML = '<p>Error de conexión</p>';
+        }
+    }
+    
+    function seleccionarHora(hora) {
+        horaSeleccionada = hora;
+        document.getElementById('res-hora').innerText = hora;
+        document.getElementById('res-mensaje').innerHTML = '<i class="fas fa-check-circle"></i> ✅ Listo para agendar';
+        document.getElementById('res-mensaje').style.color = '#27ae60';
+        
+        // Resaltar selección
+        document.querySelectorAll('.hora-item').forEach(el => {
+            el.classList.remove('seleccionado');
+            if (el.innerText.includes(hora)) {
+                el.classList.add('seleccionado');
+            }
+        });
+    }
+    
+    // Agendar cita
+    document.getElementById('btn-agendar').addEventListener('click', async () => {
+        const medicoId = document.getElementById('medico').value;
+        const fecha = document.getElementById('fecha').value;
+        const motivo = document.getElementById('motivo').value;
+        
+        if (!medicoId) {
+            alert('❌ Seleccione un médico');
+            return;
+        }
+        if (!fecha) {
+            alert('❌ Seleccione una fecha');
+            return;
+        }
+        if (!horaSeleccionada) {
+            alert('❌ Seleccione una hora disponible');
+            return;
+        }
+        
+        const btn = document.getElementById('btn-agendar');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Agendando...';
+        
+        try {
+            const response = await fetch(`${API_URL}/api/citas/agendar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    medico_id: parseInt(medicoId),
+                    fecha: fecha,
+                    hora: horaSeleccionada,
+                    motivo: motivo || ''
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert('✅ ¡Cita agendada exitosamente!');
+                window.location.href = 'paciente/listarCitasPaciente.html';
+            } else {
+                alert('❌ Error: ' + (data.error || 'No se pudo agendar la cita'));
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Agendar cita';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión con el servidor');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Agendar cita';
+        }
+    });
+    
+    // Cargar médicos al iniciar
+    cargarMedicos();
+</script>
+</body>
+</html>

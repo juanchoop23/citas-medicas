@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Mis Citas | Clínica Salud+</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #e9f0fc 0%, #ffffff 100%);
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .citas-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .citas-header {
+      background: #1f4870;
+      padding: 1.5rem 2rem;
+      color: white;
+    }
+
+    .citas-header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .citas-body {
+      padding: 2rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .titulo-pagina {
+      color: #1f4870;
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn-volver {
+      background: #3498db;
+      color: white;
+      padding: 0.7rem 1.4rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn-volver:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: 1.2rem;
+      border: 1px solid #eef2f8;
+      background: white;
+    }
+
+    .tabla-citas {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .tabla-citas thead tr {
+      background: #1f4870;
+      color: white;
+    }
+
+    .tabla-citas th,
+    .tabla-citas td {
+      padding: 1rem 0.8rem;
+      text-align: left;
+      border-bottom: 1px solid #eef2f8;
+    }
+
+    .badge-estado {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .badge-pendiente {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-confirmada {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .badge-cancelada {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .btn-cancelar {
+      background: #e74c3c;
+      color: white;
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-cancelar:hover {
+      background: #c0392b;
+      transform: translateY(-1px);
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 3rem;
+      color: #8aaec0;
+      font-style: italic;
+    }
+
+    .citas-footer {
+      background: #f8fafd;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #8aaec0;
+      border-top: 1px solid #eef2f8;
+    }
+
+    @media screen and (max-width: 768px) {
+      .citas-body { padding: 1rem; }
+      .tabla-citas th, .tabla-citas td { padding: 0.6rem 0.5rem; font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="citas-container">
+  <div class="citas-header">
+    <h1>
+      <i class="fas fa-list-ul"></i> 
+      Mis Citas
+    </h1>
+  </div>
+
+  <div class="citas-body">
+    <div class="header-actions">
+      <h2 class="titulo-pagina">
+        <i class="fas fa-calendar-check"></i> 
+        Citas programadas
+      </h2>
+      <a href="../agendar.html" class="btn-volver">
+        <i class="fas fa-calendar-plus"></i> Agendar nueva cita
+      </a>
+    </div>
+    
+    <div class="table-container">
+      <table class="tabla-citas" id="tabla-citas">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Motivo</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="citas-tbody">
+          <tr>
+            <td colspan="6" style="text-align:center">Cargando citas...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="citas-footer">
+    <p><i class="fas fa-calendar-check"></i> Sistema de gestión de citas médicas</p>
+  </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080';
+    const token = localStorage.getItem('token');
+    
+    // Verificar autenticación
+    if (!token) {
+        alert('Debes iniciar sesión primero');
+        window.location.href = '../../index.html';
+    }
+    
+    async function cargarCitas() {
+        try {
+            const response = await fetch(`${API_URL}/api/citas/mis-citas`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.status === 403 || response.status === 401) {
+                alert('Sesión expirada. Por favor inicia sesión nuevamente.');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../../index.html';
+                return;
+            }
+            
+            const data = await response.json();
+            const tbody = document.getElementById('citas-tbody');
+            
+            if (!data.citas || data.citas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">📋 No tienes citas agendadas. <a href="../agendar.html">Agendar cita</a></td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            
+            data.citas.forEach(cita => {
+                const fecha = new Date(cita.fecha);
+                const fechaStr = fecha.toISOString().split('T')[0];
+                const horaStr = cita.hora.substring(0, 5);
+                
+                let estadoClass = '';
+                let estadoText = '';
+                
+                switch(cita.estado) {
+                    case 'pendiente': 
+                        estadoClass = 'badge-pendiente'; 
+                        estadoText = '⏳ Pendiente'; 
+                        break;
+                    case 'confirmada': 
+                        estadoClass = 'badge-confirmada'; 
+                        estadoText = '✅ Confirmada'; 
+                        break;
+                    case 'cancelada': 
+                        estadoClass = 'badge-cancelada'; 
+                        estadoText = '❌ Cancelada'; 
+                        break;
+                    default: 
+                        estadoClass = 'badge-pendiente'; 
+                        estadoText = cita.estado;
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${cita.id}</td>
+                    <td>${fechaStr}</td>
+                    <td>${horaStr}</td>
+                    <td>${cita.motivo || '-'}</td>
+                    <td><span class="badge-estado ${estadoClass}">${estadoText}</span></td>
+                    <td>
+                        ${cita.estado !== 'cancelada' ? `<button class="btn-cancelar" onclick="cancelarCita(${cita.id})"><i class="fas fa-times-circle"></i> Cancelar</button>` : '-'}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('citas-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center">❌ Error al cargar citas</td></tr>';
+        }
+    }
+    
+    async function cancelarCita(citaId) {
+        if (!confirm('¿Estás seguro de cancelar esta cita?')) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/api/citas/cancelar/${citaId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                alert('✅ Cita cancelada exitosamente');
+                cargarCitas(); // Recargar la lista
+            } else {
+                const data = await response.json();
+                alert('❌ Error: ' + data.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error al cancelar cita');
+        }
+    }
+    
+    // Cargar citas al iniciar
+    cargarCitas();
+</script>
+</body>
+</html>

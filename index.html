@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Clínica Salud+ | Iniciar Sesión</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e9f0fc 0%, #dbe6f2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* Card de login */
+    .login-container {
+      max-width: 480px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    /* Header decorativo */
+    .login-header {
+      background: #1f4870;
+      padding: 1.8rem 2rem;
+      color: white;
+      text-align: center;
+    }
+    .login-header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .login-header p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-top: 0.4rem;
+    }
+
+    /* Cuerpo del formulario */
+    .login-body {
+      padding: 2rem 2rem 2.2rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: #1f4870;
+      font-size: 0.85rem;
+      letter-spacing: -0.2px;
+    }
+
+    .input-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon i {
+      position: absolute;
+      left: 1rem;
+      color: #8aaec0;
+      font-size: 1rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.8rem;
+      border: 1px solid #cbdde9;
+      border-radius: 1.2rem;
+      font-size: 0.95rem;
+      transition: 0.2s;
+      background: #ffffff;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #1f4870;
+      box-shadow: 0 0 0 3px rgba(31, 72, 112, 0.15);
+    }
+
+    /* Opciones extra */
+    .login-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1rem 0 1.8rem;
+      font-size: 0.85rem;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #2c4e6e;
+    }
+
+    .remember input {
+      width: 1rem;
+      height: 1rem;
+      margin: 0;
+      padding: 0;
+      accent-color: #1f4870;
+    }
+
+    .forgot-link {
+      color: #1f4870;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Botón principal */
+    .login-btn {
+      background: #1f4870;
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 0.9rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .login-btn:hover {
+      background: #0f3554;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(31,72,112,0.2);
+    }
+
+    /* Separador y registro */
+    .register-prompt {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #4a627a;
+      border-top: 1px solid #e2edf2;
+      padding-top: 1.5rem;
+    }
+
+    .register-prompt a {
+      color: #1f4870;
+      font-weight: 700;
+      text-decoration: none;
+      margin-left: 0.3rem;
+    }
+
+    .register-prompt a:hover {
+      text-decoration: underline;
+    }
+
+    /* Simulación de mensaje (estático, sin lógica) */
+    .demo-message {
+      background: #eef2ff;
+      border-radius: 1rem;
+      padding: 0.8rem;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #1e40af;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 550px) {
+      .login-body {
+        padding: 1.5rem;
+      }
+      .login-header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <div class="login-header">
+    <h1>
+      <i class="fas fa-stethoscope"></i> 
+      Clínica Salud+
+    </h1>
+    <p>Accede a tu cuenta para gestionar tus citas</p>
+  </div>
+
+  <div class="login-body">
+    <!-- Formulario de inicio de sesión (solo estructura visual) -->
+    <form action="#" method="post">
+      <div class="input-group">
+        <label for="email"><i class="fas fa-envelope"></i> Correo electrónico</label>
+        <div class="input-icon">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" name="email" placeholder="ejemplo@clinica.com" autocomplete="email">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
+        <div class="input-icon">
+          <i class="fas fa-key"></i>
+          <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+      </div>
+
+      <div class="login-options">
+        <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <button type="submit" class="login-btn">
+        <i class="fas fa-arrow-right-to-bracket"></i> Iniciar sesión
+      </button>
+
+
+      <div class="register-prompt">
+        ¿Aún no tienes cuenta?
+        <a href="pages/registerAfuera.html">Regístrate aquí</a>
+      </div>
+      
+    </form>
+  </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080'; // Cambiar por URL de Azure después
+    
+    // Reemplazar los <a> por botones de formulario
+    document.querySelector('.login-body form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        try {
+            const response = await fetch(`${API_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Guardar token y datos del usuario
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Redirigir según el rol
+                if (data.user.role === 'admin') {
+                    window.location.href = 'pages/admin/dashboardAdmin.html';
+                } else if (data.user.role === 'medico') {
+                    window.location.href = 'pages/medico/dashboardMedico.html';
+                } else {
+                    window.location.href = 'pages/paciente/dashboardPaciente.html';
+                }
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error de conexión: ' + error.message);
+        }
+    });
+</script>
+</body>
+</html>

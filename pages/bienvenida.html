@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Ctrl S | Bienvenido</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #1f4870 0%, #1f4870 100%);
+      min-height: 100vh;
+      padding: 0rem;
+    }
+
+    /* Contenedor principal */
+    .welcome-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 0rem;
+      /*box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);*/
+      overflow: hidden;
+    }
+
+    /* Header (opcional para mantener coherencia) */
+    .welcome-header {
+      background: #1f4870;
+      padding: 1rem 2rem;
+      color: white;
+    }
+
+    .welcome-header h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* Cuerpo principal con fondo azul */
+    .welcome-body {
+      background: #1f4870;
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* Tarjeta blanca centrada */
+    .welcome-card {
+      background: white;
+      border-radius: 2.5rem;
+      padding: 3rem 4rem;
+      text-align: center;
+      box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      width: 100%;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Icono grande */
+    .welcome-icon {
+      font-size: 5rem;
+      color: #1f4870;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Título grande */
+    .welcome-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #1f4870;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    /* Subtítulo */
+    .welcome-subtitle {
+      font-size: 1.1rem;
+      color: #4a627a;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    /* Línea decorativa */
+    .welcome-divider {
+      width: 80px;
+      height: 4px;
+      background: #1f4870;
+      margin: 0 auto 1.5rem auto;
+      border-radius: 2px;
+    }
+
+    /* Texto adicional */
+    .welcome-text {
+      font-size: 0.9rem;
+      color: #6c86a3;
+      line-height: 1.6;
+    }
+
+    /* Botones de acción (opcional) */
+    .welcome-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: #1f4870;
+      color: white;
+      padding: 0.7rem 1.8rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary:hover {
+      background: #0f3554;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #1f4870;
+      border: 2px solid #1f4870;
+      padding: 0.7rem 1.8rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+      background: #1f4870;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    .welcome-footer {
+      background: #f8fafd;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #8aaec0;
+      border-top: 1px solid #eef2f8;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+      .welcome-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .welcome-title {
+        font-size: 2.2rem;
+      }
+
+      .welcome-icon {
+        font-size: 3.5rem;
+      }
+
+      .welcome-subtitle {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="welcome-container">
+  <!-- Cuerpo con fondo azul y contenido blanco centrado -->
+  <div class="welcome-body">
+    <div class="welcome-card">
+      <div class="welcome-icon">
+        <i class="fas fa-stethoscope"></i>
+      </div>
+      <h1 class="welcome-title">Clínica Salud+</h1>
+      <div class="welcome-divider"></div>
+      <p class="welcome-subtitle">
+        Bienvenido al sistema de gestión de citas médicas
+      </p>
+      <p class="welcome-text">
+        Gestione sus citas de manera rápida, segura y eficiente.<br>
+        Digitalice el proceso de asignación de citas con nuestra plataforma intuitiva.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- 
+  NOTA: Esta es una página de bienvenida independiente.
+  Para integrar con el dashboard, copie el contenido de .welcome-body 
+  dentro del panel correspondiente.
+-->
+</body>
+</html>

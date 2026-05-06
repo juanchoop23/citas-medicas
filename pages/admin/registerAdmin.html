@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Admin | Registrar Usuario</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e9f0fc 0%, #dbe6f2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .register-container {
+      max-width: 750px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .register-header {
+      background: #1f4870;
+      padding: 1.8rem 2rem;
+      color: white;
+      text-align: center;
+    }
+
+    .register-header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .register-header p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-top: 0.4rem;
+    }
+
+    .register-body {
+      padding: 2rem 2rem 2.2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .input-group.full-width {
+      grid-column: span 2;
+    }
+
+    label {
+      font-weight: 600;
+      color: #1f4870;
+      font-size: 0.85rem;
+    }
+
+    .input-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon i {
+      position: absolute;
+      left: 1rem;
+      color: #8aaec0;
+      font-size: 1rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.8rem;
+      border: 1px solid #cbdde9;
+      border-radius: 1.2rem;
+      font-size: 0.95rem;
+      transition: 0.2s;
+      background: #ffffff;
+    }
+
+    select {
+      appearance: none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%238aaec0" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #1f4870;
+      box-shadow: 0 0 0 3px rgba(31, 72, 112, 0.15);
+    }
+
+    .medico-fields {
+      display: none;
+      background: #f8fafd;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .btn-registrar {
+      background: #27ae60;
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 0.9rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-registrar:hover {
+      background: #229954;
+      transform: translateY(-2px);
+    }
+
+    .btn-cancelar {
+      background: #95a5a6;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.7rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      width: 100%;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+
+    .btn-cancelar:hover {
+      background: #7f8c8d;
+    }
+
+    .mensaje {
+      margin-top: 1rem;
+      padding: 0.8rem;
+      border-radius: 1rem;
+      text-align: center;
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    .mensaje.exito {
+      background: #dcfce7;
+      color: #15803d;
+      display: block;
+    }
+
+    .mensaje.error {
+      background: #fee2e2;
+      color: #b91c1c;
+      display: block;
+    }
+
+    @media (max-width: 650px) {
+      .register-body { padding: 1.5rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .input-group.full-width { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+<div class="register-container">
+  <div class="register-header">
+    <h1>
+      <i class="fas fa-user-plus"></i> 
+      Nuevo Usuario
+    </h1>
+    <p>Registra un nuevo usuario en el sistema</p>
+  </div>
+
+  <div class="register-body">
+    <form id="registerForm">
+      <div class="form-grid">
+        <div class="input-group">
+          <label><i class="fas fa-user"></i> Nombre</label>
+          <div class="input-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="nombre" placeholder="Nombre" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fas fa-user"></i> Apellido</label>
+          <div class="input-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="apellido" placeholder="Apellido" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fas fa-id-card"></i> Cédula</label>
+          <div class="input-icon">
+            <i class="fas fa-id-card"></i>
+            <input type="text" id="cedula" placeholder="Número de cédula" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fas fa-phone-alt"></i> Teléfono</label>
+          <div class="input-icon">
+            <i class="fas fa-phone-alt"></i>
+            <input type="tel" id="telefono" placeholder="Teléfono / Celular" required>
+          </div>
+        </div>
+
+        <div class="input-group full-width">
+          <label><i class="fas fa-envelope"></i> Correo electrónico</label>
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" placeholder="usuario@ejemplo.com" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fas fa-lock"></i> Contraseña</label>
+          <div class="input-icon">
+            <i class="fas fa-key"></i>
+            <input type="password" id="password" placeholder="Mínimo 6 caracteres" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label><i class="fas fa-check-circle"></i> Confirmar contraseña</label>
+          <div class="input-icon">
+            <i class="fas fa-check-circle"></i>
+            <input type="password" id="confirmPassword" placeholder="Repite la contraseña" required>
+          </div>
+        </div>
+
+        <div class="input-group full-width">
+          <label><i class="fas fa-users"></i> Perfil / Rol</label>
+          <div class="input-icon">
+            <i class="fas fa-id-card"></i>
+            <select id="role">
+              <option value="paciente">Paciente</option>
+              <option value="medico">Médico</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campos específicos para médico (aparecen solo cuando se selecciona "Médico") -->
+      <div id="medicoFields" class="medico-fields">
+        <div class="form-grid">
+          <div class="input-group">
+            <label><i class="fas fa-stethoscope"></i> Especialidad</label>
+            <div class="input-icon">
+              <i class="fas fa-stethoscope"></i>
+              <select id="especialidad">
+                <option>Medicina General</option>
+                <option>Cardiología</option>
+                <option>Dermatología</option>
+                <option>Pediatría</option>
+                <option>Ginecología</option>
+                <option>Odontología</option>
+                <option>Oftalmología</option>
+                <option>Traumatología</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><i class="fas fa-door-open"></i> Consultorio</label>
+            <div class="input-icon">
+              <i class="fas fa-door-open"></i>
+              <input type="text" id="consultorio" placeholder="Ej: Consultorio 101">
+            </div>
+          </div>
+          <div class="input-group full-width">
+            <label><i class="fas fa-clock"></i> Horario de atención</label>
+            <div class="input-icon">
+              <i class="fas fa-clock"></i>
+              <input type="text" id="horario" placeholder="Ej: Lun-Vie 8:00-17:00">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-registrar">
+        <i class="fas fa-user-check"></i> Registrar Usuario
+      </button>
+
+      <a href="listaUsuariosAdmin.html" class="btn-cancelar">
+        <i class="fas fa-arrow-left"></i> Cancelar
+      </a>
+
+      <div id="mensaje" class="mensaje"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080';
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    // Verificar autenticación y rol
+    if (!token) {
+        alert('Debes iniciar sesión primero');
+        window.location.href = '../../index.html';
+    }
+    
+    if (user.role !== 'admin') {
+        alert('Acceso denegado. Se requieren permisos de administrador.');
+        window.location.href = '../../index.html';
+    }
+    
+    // Mostrar/ocultar campos de médico según el rol seleccionado
+    document.getElementById('role').addEventListener('change', function() {
+        const medicoFields = document.getElementById('medicoFields');
+        medicoFields.style.display = this.value === 'medico' ? 'block' : 'none';
+    });
+    
+    function mostrarMensaje(texto, tipo) {
+        const mensajeDiv = document.getElementById('mensaje');
+        mensajeDiv.textContent = texto;
+        mensajeDiv.className = `mensaje ${tipo}`;
+        
+        setTimeout(() => {
+            if (mensajeDiv.className.includes('exito')) {
+                window.location.href = 'listaUsuariosAdmin.html';
+            }
+        }, 2000);
+    }
+    
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const nombre = document.getElementById('nombre').value.trim();
+        const apellido = document.getElementById('apellido').value.trim();
+        const cedula = document.getElementById('cedula').value.trim();
+        const telefono = document.getElementById('telefono').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const role = document.getElementById('role').value;
+        
+        // Validaciones
+        if (!nombre || !apellido || !cedula || !telefono || !email || !password) {
+            mostrarMensaje('Por favor completa todos los campos', 'error');
+            return;
+        }
+        
+        if (password !== confirmPassword) {
+            mostrarMensaje('Las contraseñas no coinciden', 'error');
+            return;
+        }
+        
+        if (password.length < 6) {
+            mostrarMensaje('La contraseña debe tener al menos 6 caracteres', 'error');
+            return;
+        }
+        
+        // Deshabilitar botón mientras se procesa
+        const btn = document.querySelector('.btn-registrar');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+        
+        const userData = { 
+            nombre, apellido, cedula, telefono, email, password, role
+        };
+        
+        // Si es médico, agregar datos específicos
+        if (role === 'medico') {
+            userData.especialidad = document.getElementById('especialidad').value;
+            userData.consultorio = document.getElementById('consultorio').value;
+            userData.horario_atencion = document.getElementById('horario').value;
+        }
+        
+        try {
+            const response = await fetch(`${API_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(userData)
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                mostrarMensaje(`✅ Usuario "${email}" registrado exitosamente como ${role}`, 'exito');
+            } else {
+                mostrarMensaje(`❌ Error: ${data.error || 'No se pudo registrar el usuario'}`, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-check"></i> Registrar Usuario';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarMensaje('❌ Error de conexión con el servidor', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-check"></i> Registrar Usuario';
+        }
+    });
+</script>
+</body>
+</html>

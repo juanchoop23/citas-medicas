@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Admin | Reportes y Estadísticas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #e9f0fc 0%, #ffffff 100%);
+      min-height: 100vh;
+      padding: 0rem;
+    }
+
+    .reportes-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 0rem;
+      overflow: hidden;
+    }
+
+    .reportes-header {
+      background: #1f4870;
+      padding: 1.5rem 2rem;
+      color: white;
+    }
+
+    .reportes-header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .reportes-body {
+      padding: 2rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .titulo-pagina {
+      color: #1f4870;
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-export {
+      background: white;
+      color: #1f4870;
+      padding: 0.6rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.8rem;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid #cbdde9;
+      cursor: pointer;
+    }
+
+    .btn-export:hover {
+      background: #1f4870;
+      color: white;
+      border-color: #1f4870;
+      transform: translateY(-2px);
+    }
+
+    .resumen-stats {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 1.2rem;
+      padding: 1rem 1.5rem;
+      border: 1px solid #eef2f8;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+      min-width: 160px;
+      transition: 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      background: #eef2fa;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .stat-info h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1f4870;
+      line-height: 1.2;
+    }
+
+    .stat-info p {
+      font-size: 0.7rem;
+      color: #6c86a3;
+      font-weight: 500;
+    }
+
+    .charts-row {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-card {
+      flex: 1;
+      min-width: 280px;
+      background: white;
+      border-radius: 1.2rem;
+      padding: 1.2rem;
+      border: 1px solid #eef2f8;
+    }
+
+    .chart-card h3 {
+      font-size: 1rem;
+      color: #1f4870;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .bar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .bar-label {
+      width: 120px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #2c4e6e;
+    }
+
+    .bar-container {
+      flex: 1;
+      height: 28px;
+      background: #eef2fa;
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .fill-blue { background: #1f4870; }
+    .fill-green { background: #27ae60; }
+    .fill-orange { background: #f39c12; }
+    .fill-red { background: #e74c3c; }
+
+    .donut-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .donut {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      margin-bottom: 0.5rem;
+    }
+
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #1f4870;
+    }
+
+    .reportes-footer {
+      background: #f8fafd;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #8aaec0;
+      border-top: 1px solid #eef2f8;
+    }
+
+    @media screen and (max-width: 768px) {
+      .reportes-body { padding: 1rem; }
+      .resumen-stats { flex-direction: column; }
+      .charts-row { flex-direction: column; }
+      .bar-label { width: 80px; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="reportes-container">
+  <div class="reportes-header">
+    <h1>
+      <i class="fas fa-chart-line"></i> 
+      Reportes y Estadísticas
+    </h1>
+  </div>
+
+  <div class="reportes-body">
+    <div class="header-actions">
+      <h2 class="titulo-pagina">
+        <i class="fas fa-chart-simple"></i> 
+        Dashboard de Métricas
+      </h2>
+      <div class="export-buttons">
+        <button class="btn-export" onclick="window.print()">
+          <i class="fas fa-print"></i> Imprimir
+        </button>
+      </div>
+    </div>
+
+    <div id="stats-container">
+      <div class="loading"><i class="fas fa-spinner fa-spin"></i> Cargando estadísticas...</div>
+    </div>
+  </div>
+
+  <div class="reportes-footer">
+    <p><i class="fas fa-chart-line"></i> Reportes generados en tiempo real | Clínica Salud+</p>
+  </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080';
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    // Verificar autenticación y rol
+    if (!token) {
+        alert('Debes iniciar sesión primero');
+        window.location.href = '../../index.html';
+    }
+    
+    if (user.role !== 'admin') {
+        alert('Acceso denegado. Se requieren permisos de administrador.');
+        window.location.href = '../../index.html';
+    }
+    
+    let estadisticas = null;
+    let todasCitas = [];
+    
+    // Colores para el gráfico de donut
+    const colores = {
+        pendiente: '#1f4870',
+        confirmada: '#27ae60',
+        cancelada: '#e74c3c'
+    };
+    
+    // Función para calcular colores del donut
+    function calcularDonut(pendientes, confirmadas, canceladas, total) {
+        if (total === 0) return 'conic-gradient(#eef2fa 0deg 360deg)';
+        
+        const pendienteDeg = (pendientes / total) * 360;
+        const confirmadaDeg = (confirmadas / total) * 360;
+        const canceladaDeg = (canceladas / total) * 360;
+        
+        let gradiente = `conic-gradient(`;
+        let angulo = 0;
+        
+        if (pendientes > 0) {
+            gradiente += `${colores.pendiente} ${angulo}deg ${angulo + pendienteDeg}deg, `;
+            angulo += pendienteDeg;
+        }
+        if (confirmadas > 0) {
+            gradiente += `${colores.confirmada} ${angulo}deg ${angulo + confirmadaDeg}deg, `;
+            angulo += confirmadaDeg;
+        }
+        if (canceladas > 0) {
+            gradiente += `${colores.cancelada} ${angulo}deg ${angulo + canceladaDeg}deg, `;
+        }
+        
+        gradiente = gradiente.slice(0, -2) + ')';
+        return gradiente;
+    }
+    
+    // Cargar todas las citas
+    async function cargarCitas() {
+        try {
+            const response = await fetch(`${API_URL}/api/admin/todas-citas`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                todasCitas = data.citas || [];
+            }
+        } catch (error) {
+            console.error('Error cargando citas:', error);
+        }
+    }
+    
+    // Cargar estadísticas
+    async function cargarEstadisticas() {
+        try {
+            const response = await fetch(`${API_URL}/api/admin/estadisticas`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                estadisticas = await response.json();
+                await cargarCitas();
+                renderizarReportes();
+            } else {
+                document.getElementById('stats-container').innerHTML = '<div class="loading">Error al cargar estadísticas</div>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('stats-container').innerHTML = '<div class="loading">Error de conexión con el servidor</div>';
+        }
+    }
+    
+    // Calcular citas por especialidad (de la data real)
+    function calcularCitasPorEspecialidad() {
+        const especialidades = {};
+        
+        todasCitas.forEach(cita => {
+            let especialidad = 'Medicina General';
+            if (cita.motivo) {
+                if (cita.motivo.includes('Cardiología')) especialidad = 'Cardiología';
+                else if (cita.motivo.includes('Dermatología')) especialidad = 'Dermatología';
+                else if (cita.motivo.includes('Pediatría')) especialidad = 'Pediatría';
+                else if (cita.motivo.includes('Ginecología')) especialidad = 'Ginecología';
+                else if (cita.motivo.includes('Odontología')) especialidad = 'Odontología';
+            }
+            
+            especialidades[especialidad] = (especialidades[especialidad] || 0) + 1;
+        });
+        
+        return especialidades;
+    }
+    
+    // Renderizar todo el dashboard
+    function renderizarReportes() {
+        const totalPacientes = estadisticas.total_pacientes || 0;
+        const pendientes = estadisticas.citas_pendientes || 0;
+        const confirmadas = estadisticas.citas_confirmadas || 0;
+        const canceladas = estadisticas.citas_canceladas || 0;
+        const totalCitas = pendientes + confirmadas + canceladas;
+        
+        const citasPorEspecialidad = calcularCitasPorEspecialidad();
+        
+        // Calcular porcentajes para barras
+        const maxEspecialidad = Math.max(...Object.values(citasPorEspecialidad), 1);
+        
+        const especialidadesLista = [
+            { name: 'Medicina General', count: citasPorEspecialidad['Medicina General'] || 0 },
+            { name: 'Cardiología', count: citasPorEspecialidad['Cardiología'] || 0 },
+            { name: 'Dermatología', count: citasPorEspecialidad['Dermatología'] || 0 },
+            { name: 'Pediatría', count: citasPorEspecialidad['Pediatría'] || 0 },
+            { name: 'Odontología', count: citasPorEspecialidad['Odontología'] || 0 }
+        ];
+        
+        const donutGradiente = calcularDonut(pendientes, confirmadas, canceladas, totalCitas);
+        
+        const html = `
+            <div class="resumen-stats">
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><h3>${totalPacientes}</h3><p>Pacientes registrados</p></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-day"></i></div><div class="stat-info"><h3>${totalCitas}</h3><p>Total citas</p></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-clock"></i></div><div class="stat-info"><h3>${pendientes}</h3><p>Citas pendientes</p></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3>${confirmadas}</h3><p>Citas confirmadas</p></div></div>
+                <div class="stat-card"><div class="stat-icon"><i class="fas fa-times-circle"></i></div><div class="stat-info"><h3>${canceladas}</h3><p>Citas canceladas</p></div></div>
+            </div>
+
+            <div class="charts-row">
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-simple"></i> Citas por especialidad</h3>
+                    <div class="bar-chart">
+                        ${especialidadesLista.map(esp => `
+                            <div class="bar-item">
+                                <span class="bar-label"><i class="fas fa-stethoscope"></i> ${esp.name}</span>
+                                <div class="bar-container">
+                                    <div class="bar-fill fill-blue" style="width: ${(esp.count / maxEspecialidad) * 100}%;">${esp.count}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3><i class="fas fa-chart-pie"></i> Distribución por estado</h3>
+                    <div class="donut-container">
+                        <div class="donut" style="background: ${donutGradiente};"></div>
+                        <div class="donut-legend">
+                            <div class="legend-item"><div class="legend-color" style="background: #1f4870;"></div> Pendientes (${pendientes})</div>
+                            <div class="legend-item"><div class="legend-color" style="background: #27ae60;"></div> Confirmadas (${confirmadas})</div>
+                            <div class="legend-item"><div class="legend-color" style="background: #e74c3c;"></div> Canceladas (${canceladas})</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('stats-container').innerHTML = html;
+    }
+    
+    // Cargar datos
+    cargarEstadisticas();
+</script>
+</body>
+</html>

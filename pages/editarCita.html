@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Ctrl S | Agendar Cita</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #e9f0fc 0%, #dbe6f2 100%);
+      min-height: 100vh;
+      padding: 0rem;
+    }
+
+    /* Contenedor principal */
+    .citas-container {
+      max-width: 1600px;
+      margin: 0 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 0rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .citas-header {
+      background: #1f4870;
+      padding: 1.5rem 2rem;
+      color: white;
+    }
+
+    .citas-header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .citas-header p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-top: 0.3rem;
+    }
+
+    /* Cuerpo */
+    .citas-body {
+      padding: 2rem;
+    }
+
+    /* Layout de dos columnas */
+    .agendar-layout {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .formulario-col {
+      flex: 1.2;
+      min-width: 280px;
+    }
+
+    .horarios-col {
+      flex: 0.9;
+      min-width: 280px;
+    }
+
+    /* Tarjetas */
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid #eef2f8;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h2 {
+      font-size: 1.3rem;
+      color: #1f4870;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* Formulario */
+    .input-group {
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-weight: 600;
+      color: #1f4870;
+      font-size: 0.85rem;
+    }
+
+    .input-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon i {
+      position: absolute;
+      left: 1rem;
+      color: #8aaec0;
+      font-size: 1rem;
+      pointer-events: none;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.8rem;
+      border: 1px solid #cbdde9;
+      border-radius: 1.2rem;
+      font-size: 0.9rem;
+      transition: 0.2s;
+      background: #ffffff;
+      font-family: 'Inter', sans-serif;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #1f4870;
+      box-shadow: 0 0 0 3px rgba(31, 72, 112, 0.15);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Horarios disponibles - Grid estático */
+    .horarios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .hora-item {
+      background: #f8fafd;
+      border: 1px solid #e2edf2;
+      border-radius: 2rem;
+      padding: 0.6rem 0.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #2c4e6e;
+      transition: all 0.2s;
+    }
+
+    .hora-item.disponible {
+      background: #dcfce7;
+      border-color: #27ae60;
+      color: #15803d;
+    }
+
+    .hora-item.ocupado {
+      background: #fee2e2;
+      border-color: #e74c3c;
+      color: #b91c1c;
+      opacity: 0.7;
+    }
+
+    /* Leyenda de horarios */
+    .leyenda {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid #eef2f8;
+      flex-wrap: wrap;
+    }
+
+    .leyenda-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+    }
+
+    .leyenda-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+
+    .leyenda-color.disponible {
+      background: #27ae60;
+    }
+
+    .leyenda-color.ocupado {
+      background: #e74c3c;
+    }
+
+    /* Botón agendar */
+    .btn-agendar {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 0.9rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-agendar:hover {
+      background: #229954;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(39, 174, 96, 0.3);
+    }
+
+    /* Resumen cita (estático de ejemplo) */
+    .resumen-cita {
+      background: #eef2fa;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .resumen-cita p {
+      font-size: 0.85rem;
+      margin: 0.4rem 0;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .demo-message {
+      background: #eef2fa;
+      border-radius: 1rem;
+      padding: 0.8rem;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: #1e40af;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    /* Footer */
+    .citas-footer {
+      background: #f8fafd;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #8aaec0;
+      border-top: 1px solid #eef2f8;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .citas-body {
+        padding: 1rem;
+      }
+
+      .agendar-layout {
+        flex-direction: column;
+      }
+
+      .horarios-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="citas-container">
+  <div class="citas-header">
+    <h1>
+      <i class="fas fa-calendar-plus"></i> 
+      Editar Cita
+    </h1>
+  </div>
+
+  <div class="citas-body">
+    <div class="agendar-layout">
+      <!-- Columna del formulario -->
+      <div class="formulario-col">
+        <div class="card">
+          <h2><i class="fas fa-notes-medical"></i> Datos</h2>
+          
+          <form action="#" method="post">
+            <div class="input-group">
+              <label><i class="fas fa-stethoscope"></i> Especialidad</label>
+              <div class="input-icon">
+                <i class="fas fa-stethoscope"></i>
+                <select name="especialidad">
+                  <option value="medicina-general">Medicina General</option>
+                  <option value="cardiologia">Cardiología</option>
+                  <option value="dermatologia">Dermatología</option>
+                  <option value="pediatria">Pediatría</option>
+                  <option value="ginecologia">Ginecología</option>
+                  <option value="odontologia">Odontología</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label><i class="fas fa-user-md"></i> Médico</label>
+              <div class="input-icon">
+                <i class="fas fa-user-md"></i>
+                <select name="medico">
+                  <option value="Dr. Alejandro Ríos">Dr. Alejandro Ríos</option>
+                  <option value="Dra. Laura Gómez">Dra. Laura Gómez</option>
+                  <option value="Dr. Carlos Martínez">Dr. Carlos Martínez</option>
+                  <option value="Dra. Sofía Ramírez">Dra. Sofía Ramírez</option>
+                  <option value="Dr. Juan Pérez">Dr. Juan Pérez</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label><i class="fas fa-calendar-day"></i> Fecha</label>
+              <div class="input-icon">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="date" name="fecha" min="2026-05-02" value="2026-05-15">
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label><i class="fas fa-comment"></i> Motivo de la consulta</label>
+              <div class="input-icon">
+                <i class="fas fa-note-sticky"></i>
+                <textarea name="motivo" rows="3" placeholder="Describa brevemente el motivo de su consulta..."></textarea>
+              </div>
+            </div>
+
+            <a href="bienvenida.html" class="btn-agendar" onclick="alert('¡Cita modificada exitosamente!');">
+                <i class="fas fa-edit"></i> Modificar
+            </a>
+          </form>
+        </div>
+      </div>
+
+      <!-- Columna de horarios disponibles -->
+      <div class="horarios-col">
+        <div class="card">
+          <h2><i class="fas fa-clock"></i> Horarios disponibles</h2>
+          
+          <!-- Leyenda de colores -->
+          <div class="leyenda">
+            <div class="leyenda-item">
+              <div class="leyenda-color disponible"></div>
+              <span>Disponible</span>
+            </div>
+            <div class="leyenda-item">
+              <div class="leyenda-color ocupado"></div>
+              <span>Ocupado</span>
+            </div>
+          </div>
+
+          <p style="font-size: 0.75rem; color: #6c86a3; margin-bottom: 0.8rem;">
+            <i class="fas fa-calendar-day"></i> Horarios Dra. Laura Gómez para el: <strong>15/05/2026</strong>
+          </p>
+
+          <!-- Grid de horarios estático (ejemplo) -->
+          <div class="horarios-grid">
+            <div class="hora-item disponible">
+              <i class="fas fa-clock"></i> 08:00
+            </div>
+            <div class="hora-item disponible">
+              <i class="fas fa-clock"></i> 09:00
+            </div>
+            <div class="hora-item ocupado">
+              <i class="fas fa-clock"></i> 10:00
+            </div>
+            <div class="hora-item disponible">
+              <i class="fas fa-clock"></i> 11:00
+            </div>
+            <div class="hora-item disponible">
+              <i class="fas fa-clock"></i> 12:00
+            </div>
+            <div class="hora-item disponible">
+              <i class="fas fa-clock"></i> 14:00
+            </div>
+            <div class="hora-item ocupado">
+              <i class="fas fa-clock"></i> 15:00
+            </div>
+            <div class="hora-item disponible">
+              <i class="fas fa-clock"></i> 16:00
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen de cita (estático de ejemplo) -->
+        <div class="card">
+          <h2><i class="fas fa-receipt"></i> Resumen de cita</h2>
+          <div class="resumen-cita">
+            <p><i class="fas fa-stethoscope"></i> <strong>Especialidad:</strong> Medicina General</p>
+            <p><i class="fas fa-user-md"></i> <strong>Médico:</strong> Dr. Alejandro Ríos</p>
+            <p><i class="fas fa-calendar-day"></i> <strong>Fecha:</strong> 15/05/2026</p>
+            <p><i class="fas fa-clock"></i> <strong>Hora:</strong> (Pendiente de selección)</p>
+            <hr style="margin: 0.6rem 0; border-color: #cddfe7;">
+            <p style="color: #27ae60;"><i class="fas fa-check-circle"></i> Seleccione un horario disponible</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="citas-footer">
+    <p><i class="fas fa-calendar-check"></i> Los horarios disponibles se actualizan en tiempo real</p>
+  </div>
+</div>
+</body>
+</html>

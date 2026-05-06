@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Ctrl S | Listado de Usuarios</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(145deg, #e9f0fc 0%, #dbe6f2 100%);
+      min-height: 100vh;
+      padding: 0rem;
+    }
+
+    .users-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 0rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .users-header {
+      background: #1f4870;
+      padding: 1.5rem 2rem;
+      color: white;
+    }
+
+    .users-header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .users-header p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-top: 0.3rem;
+    }
+
+    .users-body {
+      padding: 2rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .titulo-pagina {
+      color: #1f4870;
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn-nuevo {
+      background: #27ae60;
+      color: white;
+      padding: 0.7rem 1.4rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-nuevo:hover {
+      background: #229954;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+    }
+
+    .stats-summary {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-badge {
+      background: white;
+      border-radius: 1rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid #eef2f8;
+      font-size: 0.8rem;
+    }
+
+    .stat-badge strong {
+      color: #1f4870;
+      font-size: 1.2rem;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: 1.2rem;
+      border: 1px solid #eef2f8;
+      background: white;
+    }
+
+    .tabla-usuarios {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .tabla-usuarios thead tr {
+      background: #1f4870;
+      color: white;
+    }
+
+    .tabla-usuarios th,
+    .tabla-usuarios td {
+      padding: 1rem 0.8rem;
+      text-align: left;
+      border-bottom: 1px solid #eef2f8;
+    }
+
+    .tabla-usuarios tbody tr:hover {
+      background: #f8fafd;
+      transition: background 0.2s;
+    }
+
+    .badge-estado {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .badge-activo {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .badge-inactivo {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .acciones {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-editar {
+      background: #3498db;
+      color: white;
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-editar:hover {
+      background: #2980b9;
+      transform: translateY(-1px);
+    }
+
+    .btn-eliminar {
+      background: #e74c3c;
+      color: white;
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-eliminar:hover {
+      background: #c0392b;
+      transform: translateY(-1px);
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 3rem;
+      color: #8aaec0;
+      font-style: italic;
+    }
+
+    .users-footer {
+      background: #f8fafd;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #8aaec0;
+      border-top: 1px solid #eef2f8;
+    }
+
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .users-body {
+        padding: 1rem;
+      }
+
+      .tabla-usuarios th,
+      .tabla-usuarios td {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.75rem;
+      }
+
+      .acciones {
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+
+      .btn-editar, .btn-eliminar {
+        text-align: center;
+        justify-content: center;
+      }
+
+      .header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .stats-summary {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="users-container">
+  <div class="users-body">
+    <div class="header-actions">
+      <h2 class="titulo-pagina">
+        <i class="fas fa-list-ul"></i> 
+        Usuarios registrados
+      </h2>
+
+      <a href="registerAdmin.html" class="btn-nuevo">
+        <i class="fas fa-user-plus"></i> Nuevo Usuario
+      </a>
+    </div>
+
+    <div class="stats-summary" id="stats-summary">
+      <div class="stat-badge"><strong>-</strong> Total usuarios</div>
+      <div class="stat-badge"><strong>-</strong> Activos</div>
+      <div class="stat-badge"><strong>-</strong> Inactivos</div>
+      <div class="stat-badge"><strong>-</strong> Administradores</div>
+      <div class="stat-badge"><strong>-</strong> Médicos</div>
+      <div class="stat-badge"><strong>-</strong> Pacientes</div>
+    </div>
+
+    <div class="table-container">
+      <table class="tabla-usuarios">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Cédula</th>
+            <th>Teléfono</th>
+            <th>Especialidad</th>
+            <th>Perfil</th>
+            <th>Estado</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody id="usuarios-tbody">
+          <tr class="empty-message">
+            <td colspan="9">Cargando usuarios... <i class="fas fa-spinner fa-spin"></i></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="users-footer">
+    <p><i class="fas fa-users"></i> Sistema de gestión clínica</p>
+  </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080';
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (!token) {
+        alert('Debes iniciar sesión primero');
+        window.parent.location.href = '../../index.html';
+    }
+    
+    if (user.role !== 'admin') {
+        alert('Acceso denegado');
+        window.parent.location.href = '../../index.html';
+    }
+    
+    function getRolNombre(rol) {
+        switch(rol) {
+            case 'admin': return 'Administrador';
+            case 'medico': return 'Médico';
+            default: return 'Paciente';
+        }
+    }
+    
+    async function cargarEstadisticas() {
+        try {
+            const response = await fetch(`${API_URL}/api/admin/usuarios`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const usuarios = data.usuarios || [];
+                const total = usuarios.length;
+                const activos = usuarios.filter(u => u.estado === 'activo').length;
+                const inactivos = usuarios.filter(u => u.estado === 'inactivo').length;
+                const admins = usuarios.filter(u => u.role === 'admin').length;
+                const medicos = usuarios.filter(u => u.role === 'medico').length;
+                const pacientes = usuarios.filter(u => u.role === 'paciente').length;
+                
+                document.getElementById('stats-summary').innerHTML = `
+                    <div class="stat-badge"><strong>${total}</strong> Total usuarios</div>
+                    <div class="stat-badge"><strong>${activos}</strong> Activos</div>
+                    <div class="stat-badge"><strong>${inactivos}</strong> Inactivos</div>
+                    <div class="stat-badge"><strong>${admins}</strong> Administradores</div>
+                    <div class="stat-badge"><strong>${medicos}</strong> Médicos</div>
+                    <div class="stat-badge"><strong>${pacientes}</strong> Pacientes</div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error cargando estadísticas:', error);
+        }
+    }
+    
+    async function cargarUsuarios() {
+        try {
+            const response = await fetch(`${API_URL}/api/admin/usuarios`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const tbody = document.getElementById('usuarios-tbody');
+                const usuarios = data.usuarios || [];
+                
+                if (usuarios.length === 0) {
+                    tbody.innerHTML = '<tr class="empty-message"><td colspan="9">No hay usuarios registrados</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = '';
+                
+                usuarios.forEach(usuario => {
+                    const estadoClass = usuario.estado === 'activo' ? 'badge-activo' : 'badge-inactivo';
+                    const estadoTexto = usuario.estado === 'activo' ? 'Activo' : 'Inactivo';
+                    const especialidadTexto = usuario.especialidad || (usuario.role === 'medico' ? 'Sin especialidad' : '-');
+                    
+                    const row = `
+                        <tr>
+                            <td>${usuario.id}</td>
+                            <td>${usuario.nombre || ''} ${usuario.apellido || ''}</td>
+                            <td>${usuario.email}</td>
+                            <td>${usuario.cedula || '-'}</td>
+                            <td>${usuario.telefono || '-'}</td>
+                            <td>${especialidadTexto}</td>
+                            <td>${getRolNombre(usuario.role)}</td>
+                            <td><span class="badge-estado ${estadoClass}">${estadoTexto}</span></td>
+                            <td class="acciones">
+                                <button class="btn-editar" onclick="editarUsuario(${usuario.id})">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn-eliminar" onclick="toggleUserStatus(${usuario.id}, '${usuario.estado}')">
+                                    <i class="fas ${usuario.estado === 'activo' ? 'fa-ban' : 'fa-check-circle'}"></i> 
+                                    ${usuario.estado === 'activo' ? 'Deshabilitar' : 'Habilitar'}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } else {
+                document.getElementById('usuarios-tbody').innerHTML = '<tr class="empty-message"><td colspan="9">Error al cargar usuarios</td></tr>';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('usuarios-tbody').innerHTML = '<tr class="empty-message"><td colspan="9">Error de conexión</td></tr>';
+        }
+    }
+    
+    async function toggleUserStatus(userId, currentStatus) {
+        const nuevoEstado = currentStatus === 'activo' ? 'inactivo' : 'activo';
+        const accion = nuevoEstado === 'activo' ? 'habilitar' : 'deshabilitar';
+        
+        if (!confirm(`¿Estás seguro de ${accion} este usuario?`)) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/api/admin/usuarios/${userId}/estado`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ estado: nuevoEstado })
+            });
+            
+            if (response.ok) {
+                alert(`✅ Usuario ${accion}do correctamente`);
+                cargarUsuarios();
+                cargarEstadisticas();
+            } else {
+                const error = await response.json();
+                alert('❌ Error: ' + (error.error || 'No se pudo cambiar el estado'));
+            }
+        } catch (error) {
+            alert('❌ Error de conexión');
+        }
+    }
+    
+    function editarUsuario(userId) {
+        localStorage.setItem('editUserId', userId);
+        window.location.href = 'editarUsuarioAdmin.html';
+    }
+    
+    cargarEstadisticas();
+    cargarUsuarios();
+</script>
+</body>
+</html>
