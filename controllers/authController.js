@@ -63,34 +63,24 @@ const register = async (req, res) => {
         const nuevoUsuario = result.rows[0];
         
         // ========== NUEVO: Si es médico, crear registro en tabla medicos ==========
+        // Si es médico, crear registro en tabla medicos
         if (rolAsignado === 'medico') {
-            // Obtener especialidad_id (por defecto 1 = Medicina General)
-            let especialidadId = 1;
+            let especialidadId = 1; // Por defecto Medicina General
             if (especialidad) {
-                const espResult = await pool.query(
-                    'SELECT id FROM especialidades WHERE nombre = $1',
-                    [especialidad]
-                );
+                const espResult = await pool.query('SELECT id FROM especialidades WHERE nombre = $1', [especialidad]);
                 if (espResult.rows.length > 0) {
                     especialidadId = espResult.rows[0].id;
                 } else {
-                    // Crear nueva especialidad si no existe
-                    const newEsp = await pool.query(
-                        'INSERT INTO especialidades (nombre) VALUES ($1) RETURNING id',
-                        [especialidad]
-                    );
+                    const newEsp = await pool.query('INSERT INTO especialidades (nombre) VALUES ($1) RETURNING id', [especialidad]);
                     especialidadId = newEsp.rows[0].id;
                 }
             }
             
-            // Insertar en tabla medicos
             await pool.query(
                 `INSERT INTO medicos (usuario_id, especialidad_id, consultorio, horario_atencion) 
-                 VALUES ($1, $2, $3, $4)`,
-                [nuevoUsuario.id, especialidadId, consultorio || '', horario_atencion || '']
+                VALUES ($1, $2, $3, $4)`,
+                [nuevoUsuario.id, especialidadId, consultorio || 'Consultorio General', horario_atencion || 'Lun-Vie 8:00-17:00']
             );
-            
-            console.log(`✅ Médico registrado: ${email} con especialidad ID ${especialidadId}`);
         }
         // ================================================================
         

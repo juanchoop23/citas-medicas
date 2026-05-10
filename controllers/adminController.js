@@ -204,46 +204,51 @@ const updateUser = async (req, res) => {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
         
-        // 2. Si es médico, actualizar tabla medicos
-        if (role === 'medico' && especialidad) {
-            // Obtener o crear especialidad_id
-            let especialidadId = null;
-            const espResult = await pool.query(
-                'SELECT id FROM especialidades WHERE nombre = $1',
-                [especialidad]
-            );
-            
-            if (espResult.rows.length > 0) {
-                especialidadId = espResult.rows[0].id;
-            } else {
-                const newEsp = await pool.query(
-                    'INSERT INTO especialidades (nombre) VALUES ($1) RETURNING id',
-                    [especialidad]
-                );
-                especialidadId = newEsp.rows[0].id;
-            }
-            
+        // 2. Si es médico, asegurar que tiene registro en tabla medicos
+        if (role === 'medico') {
             // Verificar si ya existe registro en medicos
             const medicoExistente = await pool.query(
                 'SELECT id FROM medicos WHERE usuario_id = $1',
                 [userId]
             );
             
-            if (medicoExistente.rows.length > 0) {
-                // Actualizar registro existente
-                await pool.query(
-                    `UPDATE medicos 
-                     SET especialidad_id = $1, consultorio = $2, horario_atencion = $3
-                     WHERE usuario_id = $4`,
-                    [especialidadId, consultorio || '', horario_atencion || '', userId]
-                );
+            if (especialidad) {
+                // Obtener o crear especialidad_id
+                let espResult = await pool.query('SELECT id FROM especialidades WHERE nombre = $1', [especialidad]);
+                let especialidadId;
+                
+                if (espResult.rows.length > 0) {
+                    especialidadId = espResult.rows[0].id;
+                } else {
+                    const newEsp = await pool.query('INSERT INTO especialidades (nombre) VALUES ($1) RETURNING id', [especialidad]);
+                    especialidadId = newEsp.rows[0].id;
+                }
+                
+                if (medicoExistente.rows.length > 0) {
+                    // Actualizar registro existente
+                    await pool.query(
+                        `UPDATE medicos 
+                         SET especialidad_id = $1, consultorio = $2, horario_atencion = $3
+                         WHERE usuario_id = $4`,
+                        [especialidadId, consultorio || '', horario_atencion || '', userId]
+                    );
+                } else {
+                    // Crear nuevo registro
+                    await pool.query(
+                        `INSERT INTO medicos (usuario_id, especialidad_id, consultorio, horario_atencion) 
+                         VALUES ($1, $2, $3, $4)`,
+                        [userId, especialidadId, consultorio || '', horario_atencion || '']
+                    );
+                }
             } else {
-                // Crear nuevo registro
-                await pool.query(
-                    `INSERT INTO medicos (usuario_id, especialidad_id, consultorio, horario_atencion) 
-                     VALUES ($1, $2, $3, $4)`,
-                    [userId, especialidadId, consultorio || '', horario_atencion || '']
-                );
+                // Si no se envió especialidad, crear un registro básico (especialidad por defecto = 1)
+                if (medicoExistente.rows.length === 0) {
+                    await pool.query(
+                        `INSERT INTO medicos (usuario_id, especialidad_id, consultorio, horario_atencion) 
+                         VALUES ($1, 1, $2, $3)`,
+                        [userId, consultorio || 'Consultorio General', horario_atencion || 'Lun-Vie 8:00-17:00']
+                    );
+                }
             }
         }
         

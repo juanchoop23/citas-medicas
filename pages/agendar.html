@@ -306,6 +306,12 @@
         const medicoId = document.getElementById('medico').value;
         const fecha = document.getElementById('fecha').value;
         const motivo = document.getElementById('motivo').value;
+
+
+        // Dentro del click del botón agendar, antes del fetch
+        console.log('Médico seleccionado - valor del select:', medicoId);
+        console.log('Tipo:', typeof medicoId);
+        console.log('medico_id a enviar:', parseInt(medicoId));
         
         if (!medicoId) {
             alert('❌ Seleccione un médico');
@@ -345,7 +351,7 @@
                 alert('✅ ¡Cita agendada exitosamente!');
                 window.location.href = 'paciente/listarCitasPaciente.html';
             } else {
-                alert('❌ Error: ' + (data.error || 'No se pudo agendar la cita'));
+                alert('❌ Error: ' + (data.error || 'No se pudo agendar la cita Verificar si tiene citas agendadas para la misma hora'));
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-save"></i> Agendar cita';
             }
